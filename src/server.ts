@@ -1,4 +1,4 @@
-import express, {Application, Request, Response} from 'express'
+import express, {Application} from 'express'
 import logger from "./utils/logger";
 import dotenv from "dotenv";
 import connectDB from "./utils/connectDB";
