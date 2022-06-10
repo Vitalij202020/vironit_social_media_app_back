@@ -1,7 +1,9 @@
 import authRoutes from "./authRoutes";
+import postRoutes from "./postRoutes"
 
 const routes = [
-    authRoutes
+    authRoutes,
+    postRoutes
 ]
 
 export default routes
