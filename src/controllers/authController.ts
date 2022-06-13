@@ -20,7 +20,11 @@ const authController = {
             const hashPassword = await bcrypt.hash(password, 5);
             const newUser = await UserModel.create({ ...req.body, password: hashPassword});
             console.log("---after---create---", newUser)
-            return res.status(200).json({msg: `${newUser.nickName} Successfully Registered!`, id: newUser._id})
+            return res.json({
+                msg: `${newUser.nickName} Successfully Registered!`,
+                token: null,
+                user: {...newUser.toObject(), password: null}
+            })
         } catch (err: any) {
             return res.status(500).json({msg: err.message})
         }

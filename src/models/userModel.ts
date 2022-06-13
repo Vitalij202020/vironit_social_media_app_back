@@ -41,7 +41,7 @@ const UserSchema: Schema = new Schema({
     sex: {
         type: String,
         trim: true,
-        maxlength: 5,
+        maxlength: 7,
     },
     password: {
         type: String,

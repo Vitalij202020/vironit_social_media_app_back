@@ -1,16 +1,12 @@
 import {Response, NextFunction, Request} from 'express'
-import Users, {UserModel} from '../models/userModel'
+import Users from '../models/userModel'
 import jwt from 'jsonwebtoken'
 
 interface IDecodedToken {
     id?: string;
 }
 
-export interface IAuthRequest extends Request {
-    user?: UserModel
-}
-
-const authMiddleware = async (req: IAuthRequest, res: Response, next: NextFunction) => {
+const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.header("Authorization")
         const name = token?.split(' ')[0]
@@ -30,7 +26,7 @@ const authMiddleware = async (req: IAuthRequest, res: Response, next: NextFuncti
         if(!user) {
             return res.status(400).json({msg: "User does not exist."})
         }
-        req.user = user;
+        req.body = {...req.body, user: user}
         next()
     } catch (err: any) {
         return res.status(500).json({msg: err.message})
