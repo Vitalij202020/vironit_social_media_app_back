@@ -4,19 +4,33 @@ import UserModel from "../models/userModel";
 const userController = {
     update: async (req: Request, res: Response) => {
         try {
-            const { nickName, firstName, lastName, email, dateOfBirth, sex } = req.body
+            const { nickName, firstName, lastName, email, dateOfBirth, story } = req.body
+            console.log("Controller---Update", req.user)
+
             const isEmailExist = await UserModel.findOne({email});
-            if (isEmailExist && isEmailExist.email !== email) {
+            console.log("update check email", !isEmailExist?._id.equals(req.user._id))
+            if (isEmailExist && !isEmailExist._id.equals(req.user._id)) {
                 return res.status(400).json({msg: `User with this ${email} email already exist!`})
             }
             const isNickNameExist = await UserModel.findOne({nickName});
-            if (isNickNameExist && isNickNameExist.nickName !== nickName) {
+            if (isNickNameExist && !isNickNameExist._id.equals(req.user._id)) {
                 return res.status(400).json({msg: `User with this ${nickName} nickname already exist!`})
             }
-            await UserModel.findOneAndUpdate({_id: req.body.user._id}, {
-                nickName, firstName, lastName, email, dateOfBirth, sex
+            console.log('---user ---- id ---', req.user._id)
+            const updatedUser = await UserModel.findOneAndUpdate({_id: req.user._id}, {
+                nickName,
+                firstName,
+                lastName,
+                email,
+                dateOfBirth,
+                story,
+                avatar: `${process.env.BASE_URL}/static/images/${req.file?.filename}`
+            }, {new: true})
+            console.log(updatedUser)
+            return res.json({
+                msg: "Successfully Updated!",
+                user: {...updatedUser?.toObject(), password: null}
             })
-            return res.json({msg: `${nickName} Successfully Updated!`})
         } catch (err: any) {
             return res.status(500).json({msg: err.message})
         }

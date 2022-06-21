@@ -4,6 +4,9 @@ import userUpdateValidateModel from "../models/userUpdateValidateModel";
 
 const userUpdateValidation = (req: Request, res: Response, next: NextFunction) => {
     try {
+        console.log('---userUpdateValidation---', req.user)
+        console.log('---userUpdateValidation---file---', req.file)
+
         const {error} = userUpdateValidateModel.validate(req.body)
         if (error) {
             return res.status(400).json({msg: error.details[0].message})

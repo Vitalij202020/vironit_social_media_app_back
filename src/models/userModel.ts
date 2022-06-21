@@ -6,6 +6,7 @@ export interface UserModel extends Document {
     lastName?: string;
     email: string;
     dateOfBirth?: string;
+    story?: string;
     sex?: string;
     password: string;
 }
@@ -42,6 +43,14 @@ const UserSchema: Schema = new Schema({
         type: String,
         trim: true,
         maxlength: 7,
+    },
+    story: {
+        type: String,
+        default: 'I am filing good!'
+    },
+    avatar: {
+        type: String,
+        default: 'https://alexeykrol.com/wp-content/uploads/2018/12/karolyn-fox-foto.1024x1024.jpg'
     },
     password: {
         type: String,

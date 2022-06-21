@@ -5,7 +5,7 @@ import userRoutes from "./userRoutes";
 const routes = [
     authRoutes,
     postRoutes,
-    userRoutes
+    userRoutes,
 ]
 
 export default routes
