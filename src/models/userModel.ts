@@ -9,6 +9,7 @@ export interface UserModel extends Document {
     story?: string;
     sex?: string;
     password: string;
+    avatar: string;
 }
 
 const UserSchema: Schema = new Schema({

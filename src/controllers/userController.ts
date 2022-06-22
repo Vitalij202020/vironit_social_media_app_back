@@ -24,7 +24,9 @@ const userController = {
                 email,
                 dateOfBirth,
                 story,
-                avatar: `${process.env.BASE_URL}/static/images/${req.file?.filename}`
+                avatar: req.file
+                    ?`${process.env.BASE_URL}/static/images/${req.file?.filename}`
+                    : 'https://alexeykrol.com/wp-content/uploads/2018/12/karolyn-fox-foto.1024x1024.jpg'
             }, {new: true})
             console.log(updatedUser)
             return res.json({
