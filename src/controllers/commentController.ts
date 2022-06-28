@@ -21,7 +21,7 @@ const commentController = {
                 $push: {comments: newComment._id}
             }, {new: true})
 
-            return res.json({newComment})
+            return res.json({msg: 'Comment Successfully Added!'})
         } catch (err: any) {
             return res.status(500).json({msg: err.message})
         }
@@ -33,7 +33,6 @@ const commentController = {
             if(!comment) {
                 return res.status(400).json({msg: "Comment doesn't exist!"})
             }
-            console.log('---delete-comment---', comment)
             await PostModel.findOneAndUpdate({_id: comment?.postId}, {
                 $pull: {comments: req.params.id}
             })

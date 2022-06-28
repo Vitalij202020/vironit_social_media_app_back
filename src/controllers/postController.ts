@@ -1,12 +1,14 @@
 import {Request, Response} from "express";
 import PostModel from "../models/postModel";
+import CommentModel from "../models/commentModel";
 
 
 const postController = {
     create: async (req: Request, res: Response) => {
         try {
             const newPost = await PostModel.create({
-                content: req.body.content,
+                title: req.body.title,
+                description: req.body.description,
                 image: req.file
                     ? `${process.env.BASE_URL}/static/images/${req.file?.filename}`
                     : 'https://3.bp.blogspot.com/-Wdtjfs2hm9w/V33YW6LFPZI/AAAAAAAAaA8/KqBjOA4BBmkanB-TPslcsxkxvAcXpzNmwCLcB/s400/buyers_guide_-_abarth_500_2014_-_rear_quarter.jpg',
@@ -14,7 +16,8 @@ const postController = {
             });
             return res.json({
                 msg: 'Post Successfully Created!',
-                ...newPost.toObject(),
+                post: {...newPost.toObject()},
+                user: req.user
             })
         } catch (err: any) {
             return res.status(500).json({msg: err.message})
@@ -23,11 +26,21 @@ const postController = {
 
     update: async (req: Request, res: Response) => {
         try {
-            const post = await PostModel.findById(req.params.id).populate('user likes')
-            if(!post) {
+            const isPostExist = await PostModel.findById(req.body._id)
+            if(!isPostExist) {
                 return res.status(400).json({msg: "Post doesn't exist!"})
             }
-            return res.json(post)
+            const updatedPost = await PostModel.findOneAndUpdate({_id: req.body._id}, {
+                title: req.body.title,
+                description: req.body.description,
+                image: req.file
+                    ? `${process.env.BASE_URL}/static/images/${req.file?.filename}`
+                    : isPostExist.image
+            }, {new: true})
+            return res.json({
+                msg: 'Post Successfully Updated!',
+                post: {...updatedPost?.toObject()},
+            })
         } catch (err: any) {
             return res.status(500).json({msg: err.message})
         }
@@ -35,11 +48,12 @@ const postController = {
 
     delete: async (req: Request, res: Response) => {
         try {
-            const post = await PostModel.findById(req.params.id).populate('user likes')
+            const post = await PostModel.findOneAndDelete({_id: req.params.id})
             if(!post) {
                 return res.status(400).json({msg: "Post doesn't exist!"})
             }
-            return res.json(post)
+            await CommentModel.deleteMany({_id: {$in: post.comments}})
+            return res.json({msg: 'Post Successfully Deleted!'})
         } catch (err: any) {
             return res.status(500).json({msg: err.message})
         }
@@ -47,8 +61,29 @@ const postController = {
 
     getAll: async (req: Request, res: Response) => {
         try {
-            const allPosts = await PostModel.find().populate('user')
+            const allPosts = await PostModel.find({}, null, {sort: '-createdAt'}).populate('user comments').populate({
+                path: 'comments',
+                populate: {
+                    path: 'user',
+                    select: '-password'
+                }
+            })
             return res.json(allPosts)
+        } catch (err: any) {
+            return res.status(500).json({msg: err.message})
+        }
+    },
+
+    getAllMyPosts: async (req: Request, res: Response) => {
+        try {
+            const allMyPosts = await PostModel.find({user: req.user._id}, null, {sort: '-createdAt'}).populate('user comments').populate({
+                path: 'comments',
+                populate: {
+                    path: 'user',
+                    select: '-password'
+                }
+            })
+            return res.json(allMyPosts)
         } catch (err: any) {
             return res.status(500).json({msg: err.message})
         }

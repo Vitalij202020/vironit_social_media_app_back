@@ -14,7 +14,7 @@ const CommentSchema: Schema = new Schema({
     },
     user: {type: mongoose.Types.ObjectId, ref: 'User'},
     postId: mongoose.Types.ObjectId,
-    postUserId: mongoose.Types.ObjectId,
+    postUserId: mongoose.Types.ObjectId
 }, {
     timestamps: true
 })

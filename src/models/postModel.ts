@@ -1,15 +1,20 @@
 import mongoose, {Schema, Document} from "mongoose";
 
 export interface PostModel extends Document {
-    content: string;
-    images: string;
+    title: string;
+    description: string;
+    image: string;
     user: string;
     likes: string[];
     comments: string[];
 }
 
 const PostSchema: Schema = new Schema({
-    content: {
+    title: {
+        type: String,
+        required: true,
+    },
+    description: {
         type: String,
         required: true,
     },
