@@ -14,5 +14,6 @@ router.patch(
 
 router.get('/user/:id', authMiddleware, userController.getOne)
 
+router.get('/users', authMiddleware, userController.getAllUsers)
 
 export default router;

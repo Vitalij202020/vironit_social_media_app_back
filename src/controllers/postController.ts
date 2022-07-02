@@ -27,7 +27,7 @@ const postController = {
     update: async (req: Request, res: Response) => {
         try {
             const isPostExist = await PostModel.findById(req.body._id)
-            if(!isPostExist) {
+            if (!isPostExist) {
                 return res.status(400).json({msg: "Post doesn't exist!"})
             }
             const updatedPost = await PostModel.findOneAndUpdate({_id: req.body._id}, {
@@ -49,7 +49,7 @@ const postController = {
     delete: async (req: Request, res: Response) => {
         try {
             const post = await PostModel.findOneAndDelete({_id: req.params.id})
-            if(!post) {
+            if (!post) {
                 return res.status(400).json({msg: "Post doesn't exist!"})
             }
             await CommentModel.deleteMany({_id: {$in: post.comments}})
@@ -61,13 +61,16 @@ const postController = {
 
     getAll: async (req: Request, res: Response) => {
         try {
-            const allPosts = await PostModel.find({}, null, {sort: '-createdAt'}).populate('user comments').populate({
-                path: 'comments',
-                populate: {
-                    path: 'user',
-                    select: '-password'
-                }
-            })
+            const allPosts = await PostModel
+                .find({}, null, {sort: '-createdAt'})
+                .populate('user comments')
+                .populate({
+                    path: 'comments',
+                    populate: {
+                        path: 'user',
+                        select: '-password'
+                    }
+                })
             return res.json(allPosts)
         } catch (err: any) {
             return res.status(500).json({msg: err.message})
@@ -76,13 +79,34 @@ const postController = {
 
     getAllMyPosts: async (req: Request, res: Response) => {
         try {
-            const allMyPosts = await PostModel.find({user: req.user._id}, null, {sort: '-createdAt'}).populate('user comments').populate({
-                path: 'comments',
-                populate: {
-                    path: 'user',
-                    select: '-password'
-                }
-            })
+            const allMyPosts = await PostModel
+                .find({user: req.user._id}, null, {sort: '-createdAt'})
+                .populate('user comments')
+                .populate({
+                    path: 'comments',
+                    populate: {
+                        path: 'user',
+                        select: '-password'
+                    }
+                })
+            return res.json(allMyPosts)
+        } catch (err: any) {
+            return res.status(500).json({msg: err.message})
+        }
+    },
+
+    getAllUserPosts: async (req: Request, res: Response) => {
+        try {
+            const allMyPosts = await PostModel
+                .find({user: req.params.id}, null, {sort: '-createdAt'})
+                .populate('user comments')
+                .populate({
+                    path: 'comments',
+                    populate: {
+                        path: 'user',
+                        select: '-password'
+                    }
+                })
             return res.json(allMyPosts)
         } catch (err: any) {
             return res.status(500).json({msg: err.message})
@@ -91,11 +115,11 @@ const postController = {
 
     getOne: async (req: Request, res: Response) => {
         try {
-            if(req.params.id.length !== 24) {
+            if (req.params.id.length !== 24) {
                 return res.status(400).json({msg: "Wrong ID"})
             }
             const post = await PostModel.findById(req.params.id).populate('user likes')
-            if(!post) {
+            if (!post) {
                 return res.status(400).json({msg: "Post doesn't exist!"})
             }
             return res.json(post)

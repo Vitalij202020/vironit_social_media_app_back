@@ -16,6 +16,8 @@ router.route('/post/:id')
 
 router.get('/my/post/', authMiddleware, postController.getAllMyPosts)
 
+router.get('/post/user/:id', authMiddleware, postController.getAllUserPosts)
+
 router.patch('/post/:id/like', authMiddleware, postController.addLike)
 
 router.patch('/post/:id/unlike', authMiddleware, postController.removeLike)

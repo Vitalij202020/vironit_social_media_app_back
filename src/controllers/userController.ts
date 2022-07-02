@@ -48,6 +48,19 @@ const userController = {
         } catch (err: any) {
             return res.status(500).json({msg: err.message})
         }
+    },
+
+    getAllUsers: async (req: Request, res: Response) => {
+        try {
+            const users = await UserModel.find({}).select('-password');
+            if (!users) {
+                return res.status(400).json({msg: `Users Not Found!!`});
+            }
+            const usersWithoutMe = users.filter(user => String(user._id) !== String(req.user._id));
+            return res.json(usersWithoutMe)
+        } catch (err: any) {
+            return res.status(500).json({msg: err.message})
+        }
     }
 }
 
