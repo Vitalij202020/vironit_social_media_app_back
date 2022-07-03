@@ -61,6 +61,20 @@ const userController = {
         } catch (err: any) {
             return res.status(500).json({msg: err.message})
         }
+    },
+
+    getSearchResult: async (req: Request, res: Response) => {
+        try {
+            console.log('getSearchResult------------->>>>>>>>>>>>', req.query.name)
+            const users = await UserModel.find({nickName: {$regex: req.query.name}}).select('-password');
+            const usersWithoutMe = users.filter(user => String(user._id) !== String(req.user._id));
+            if (usersWithoutMe.length === 0) {
+                return res.status(400).json({msg: `Users Not Found!!`});
+            }
+            return res.json(usersWithoutMe)
+        } catch (err: any) {
+            return res.status(500).json({msg: err.message})
+        }
     }
 }
 

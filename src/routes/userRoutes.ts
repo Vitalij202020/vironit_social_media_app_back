@@ -16,4 +16,6 @@ router.get('/user/:id', authMiddleware, userController.getOne)
 
 router.get('/users', authMiddleware, userController.getAllUsers)
 
+router.get('/users/search', authMiddleware, userController.getSearchResult)
+
 export default router;
