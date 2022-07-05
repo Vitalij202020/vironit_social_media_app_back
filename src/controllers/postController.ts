@@ -130,17 +130,13 @@ const postController = {
 
     addLike: async (req: Request, res: Response) => {
         try {
-            console.log("---post -id---", req.params.id)
             const post = await PostModel.find({_id: req.params.id, likes: req.user._id})
-            console.log("---post---", post)
             if (post.length > 0) {
                 return res.status(400).json({msg: "You Already Liked This Post!"})
             }
             const like = await PostModel.findOneAndUpdate({_id: req.params.id}, {
                 $push: {likes: req.user._id}
             }, {new: true})
-            console.log("---post -id---", req.params.id)
-            console.log("---like---", like)
             if (!like) {
                 return res.status(400).json({msg: "This Post Doesn't Exist"})
             }
@@ -155,7 +151,6 @@ const postController = {
             const like = await PostModel.findOneAndUpdate({_id: req.params.id}, {
                 $pull: {likes: req.user._id}
             }, {new: true})
-            console.log("---like---", like)
             if (!like) {
                 return res.status(400).json({msg: "This Post Doesn't Exist"})
             }

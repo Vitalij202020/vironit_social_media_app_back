@@ -9,7 +9,6 @@ const storage = multer.diskStorage({
         callback(null, 'public/images')
     },
     filename(req: Request, file: Express.Multer.File, callback: (error: (Error | null), filename: string) => void) {
-        console.log('----inside---storage---', file, req.body)
         callback(null,uuidv4() + path.extname(file.originalname))
     }
 })

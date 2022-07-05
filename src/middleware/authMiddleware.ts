@@ -9,7 +9,6 @@ interface IDecodedToken {
 const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.header("Authorization")
-        console.log("----------auth -----token-----", token)
         const name = token?.split(' ')[0]
         const cod = token?.split(' ')[1]
 
@@ -28,7 +27,6 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
             return res.status(400).json({msg: "User does not exist."})
         }
         req.user = user
-        console.log('--- user ---', req.user)
         next()
     } catch (err: any) {
         return res.status(500).json({msg: err.message})

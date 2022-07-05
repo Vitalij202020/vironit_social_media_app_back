@@ -5,10 +5,7 @@ const userController = {
     update: async (req: Request, res: Response) => {
         try {
             const { nickName, firstName, lastName, email, dateOfBirth, story } = req.body
-            console.log("Controller---Update", req.user)
-
             const isEmailExist = await UserModel.findOne({email});
-            console.log("update check email", !isEmailExist?._id.equals(req.user._id))
             if (isEmailExist && !isEmailExist._id.equals(req.user._id)) {
                 return res.status(400).json({msg: `User with this ${email} email already exist!`})
             }
@@ -16,7 +13,6 @@ const userController = {
             if (isNickNameExist && !isNickNameExist._id.equals(req.user._id)) {
                 return res.status(400).json({msg: `User with this ${nickName} nickname already exist!`})
             }
-            console.log('---user ---- id ---', req.user._id)
             const updatedUser = await UserModel.findOneAndUpdate({_id: req.user._id}, {
                 nickName,
                 firstName,
@@ -28,7 +24,6 @@ const userController = {
                     ?`${process.env.BASE_URL}/static/images/${req.file?.filename}`
                     : 'https://alexeykrol.com/wp-content/uploads/2018/12/karolyn-fox-foto.1024x1024.jpg'
             }, {new: true})
-            console.log(updatedUser)
             return res.json({
                 msg: "Successfully Updated!",
                 user: {...updatedUser?.toObject(), password: null}
@@ -65,7 +60,6 @@ const userController = {
 
     getSearchResult: async (req: Request, res: Response) => {
         try {
-            console.log('getSearchResult------------->>>>>>>>>>>>', req.query.name)
             const users = await UserModel.find({nickName: {$regex: req.query.name}}).select('-password');
             const usersWithoutMe = users.filter(user => String(user._id) !== String(req.user._id));
             if (usersWithoutMe.length === 0) {

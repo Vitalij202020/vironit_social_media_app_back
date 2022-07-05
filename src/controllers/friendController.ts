@@ -75,7 +75,6 @@ const friendController = {
                     {from: req.params.id, to: req.user._id}
                 ]
             })
-            console.log('friendRequest----------->>>>>>>>>', friendRequest)
             if(!friendRequest) {
                 return res.status(400).json({msg: "Request Not Found!"})
             }

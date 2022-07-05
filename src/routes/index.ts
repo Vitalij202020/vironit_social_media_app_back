@@ -4,6 +4,8 @@ import userRoutes from "./userRoutes";
 import commentRoutes from "./commentRoutes";
 import friendRoutes from "./friendRoutes";
 import notificationRoutes from "./notificationRoutes";
+import messageRoutes from "./messageRoutes";
+import conversationRoutes from "./conversationRoutes";
 
 const routes = [
     authRoutes,
@@ -11,7 +13,9 @@ const routes = [
     userRoutes,
     commentRoutes,
     friendRoutes,
-    notificationRoutes
+    notificationRoutes,
+    messageRoutes,
+    conversationRoutes
 ]
 
 export default routes
