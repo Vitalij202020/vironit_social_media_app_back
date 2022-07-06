@@ -27,7 +27,7 @@ const messageController = {
                 recipient,
                 message
             })
-            return res.json({msg: 'Message Successfully Added!'})
+            return res.json({msg: 'Message Successfully Added!', id: newMessage._id})
         } catch (err: any) {
             return res.status(500).json({msg: err.message})
         }
@@ -56,6 +56,17 @@ const messageController = {
                 }, null, {sort: 'createdAt'})
                 .populate({path: 'sender recipient', select: '-password'})
             return res.json(messages)
+        } catch (err: any) {
+            return res.status(500).json({msg: err.message})
+        }
+    },
+
+    getMessage: async (req: Request, res: Response) => {
+        try {
+            const message = await MessageModel
+                .findById(req.params.id)
+                .populate({path: 'sender recipient', select: '-password'})
+            return res.json(message)
         } catch (err: any) {
             return res.status(500).json({msg: err.message})
         }
