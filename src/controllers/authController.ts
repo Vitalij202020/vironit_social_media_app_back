@@ -8,7 +8,6 @@ const authController = {
     register: async (req: Request, res: Response) => {
         try {
             const { nickName, firstName, lastName, email, dateOfBirth, sex, password } = req.body
-            console.log("---up---register---", nickName)
             const isEmailExist = await UserModel.findOne({email});
             if (isEmailExist) {
                 return res.status(400).json({msg: `User with this ${email} email already exist!`})
@@ -19,7 +18,6 @@ const authController = {
             }
             const hashPassword = await bcrypt.hash(password, 5);
             const newUser = await UserModel.create({ ...req.body, password: hashPassword});
-            console.log("---after---create---", newUser)
             return res.json({
                 msg: `${newUser.nickName} Successfully Registered!`,
                 token: null,
